@@ -4,7 +4,7 @@
   "description": "Changes the background in the picture",
   "main": "index.js",
   "scripts": {
-    "start": "",
+    "start": "node src/server",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky install"
   },
@@ -20,5 +20,8 @@
   "lint-staged": {
     "*.js": "eslint --cache --fix",
     "*.{js,css,md}": "prettier --write"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
   }
 }
