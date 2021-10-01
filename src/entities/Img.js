@@ -1,5 +1,5 @@
 const { rm } = require('fs/promises');
-const { imagesFolder } = require('../config');
+const { imgFolder } = require('../config');
 const { generateId } = require('../utils/generateId');
 const path = require('path');
 
@@ -12,15 +12,25 @@ module.exports = class Img {
   }
 
   async delete() {
-    const pathToImg = path.resolve(imagesFolder, this.id + this.extension);
-    await rm(pathToImg);
+    await rm(this.path);
   }
-
+  path() {
+    return path.resolve(imgFolder, this.id + this.extension);
+  }
   toPublicJSON() {
     return {
       id: this.id,
       uploadedAt: this.uploadedAt,
       size: this.size,
+    };
+  }
+
+  toJSON() {
+    return {
+      id: this.id,
+      uploadedAt: this.uploadedAt,
+      size: this.size,
+      extension: this.extension,
     };
   }
 };

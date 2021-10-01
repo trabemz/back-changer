@@ -1,11 +1,13 @@
 const path = require('path');
 
 const dbFolder = path.resolve(__dirname, '../../db/');
-const imagesFolder = path.resolve(dbFolder, 'images');
+const imgFolder = path.resolve(dbFolder, 'images');
+const dumpFile = path.resolve(dbFolder, 'dump.json');
 
 module.exports = {
   PORT: 8080,
 
   dbFolder,
-  imagesFolder,
+  imgFolder,
+  dumpFile,
 };

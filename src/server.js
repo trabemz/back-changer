@@ -5,6 +5,8 @@ const { generateId } = require('./utils/generateId');
 const path = require('path');
 const db = require('./entities/Database');
 const Img = require('./entities/Img');
+const { createReadStream } = require('fs');
+const { replaceBackground } = require('backrem');
 
 const app = express();
 
@@ -14,7 +16,7 @@ app.get('/', (req, res) => {
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, config.imagesFolder);
+    cb(null, config.imgFolder);
   },
   filename: function (req, file, cb) {
     cb(null, generateId() + path.extname(file.originalname)); //Appending extension
@@ -30,7 +32,7 @@ app.post(
     const id = parsedName.name;
     const extension = parsedName.ext;
 
-    db.insert(new Img(id, null, req.file.size, extension));
+    db.insert(new Img(id, Date.now(), req.file.size, extension));
 
     res.send(id);
   }
@@ -43,9 +45,7 @@ app.get('/list', (req, res) => {
 app.get('/image/:id', (req, res) => {
   const img = db.getOne(req.params.id);
 
-  const pathToImg = path.resolve(config.imagesFolder, img.id + img.extension);
-
-  res.download(pathToImg);
+  res.download(img.path());
 });
 
 app.delete('/image/:id', async (req, res) => {
@@ -54,6 +54,23 @@ app.delete('/image/:id', async (req, res) => {
   const id = await db.remove(imgId);
 
   return res.json({ id });
+});
+
+///merge?front=<id>&back=<id>&color=145,54,32&threshold=5
+app.get('/merge', (req, res) => {
+  const front = db.getOne(req.query.front);
+  const back = db.getOne(req.query.back);
+
+  const frontStream = createReadStream(front.path());
+  const backSteam = createReadStream(back.path());
+  const color = req.query.color.split(',');
+  const threshold = req.query.threshold;
+
+  replaceBackground(frontStream, backSteam, color, threshold).then(
+    (readableStream) => {
+      readableStream.pipe(res);
+    }
+  );
 });
 
 app.listen(config.PORT, () => {
