@@ -12,11 +12,13 @@ module.exports = class Img {
   }
 
   async delete() {
-    await rm(this.path);
+    await rm(this.path());
   }
+
   path() {
     return path.resolve(imgFolder, this.id + this.extension);
   }
+
   toPublicJSON() {
     return {
       id: this.id,
