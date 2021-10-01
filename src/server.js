@@ -1,8 +1,11 @@
 const express = require('express');
 const config = require('./config');
 const { imgRouter } = require('./routers');
+const setupMiddlewares = require('./middlewares');
 
 const app = express();
+
+setupMiddlewares(app);
 
 app.use('/', imgRouter);
 
