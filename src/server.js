@@ -3,6 +3,8 @@ const multer = require('multer');
 const config = require('./config');
 const { generateId } = require('./utils/generateId');
 const path = require('path');
+const db = require('./entities/Database');
+const Img = require('./entities/Img');
 
 const app = express();
 
@@ -23,12 +25,19 @@ app.post(
   '/upload',
   multer({ storage: storage }).single('image'),
   (req, res) => {
-    res.send(req.file.filename);
+    const parsedName = path.parse(req.file.filename);
+
+    const id = parsedName.name;
+    const extension = parsedName.ext;
+
+    db.insert(new Img(null, null, req.file.size, extension));
+
+    res.send(id);
   }
 );
 
 app.get('/list', (req, res) => {
-  res.send('list');
+  res.json(db.get().map((img) => img.toPublicJSON()));
 });
 
 app.get('/image/:id', (req, res) => {
