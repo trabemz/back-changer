@@ -1,6 +1,8 @@
 const express = require('express');
 const multer = require('multer');
 const config = require('./config');
+const { generateId } = require('./utils/generateId');
+const path = require('path');
 
 const app = express();
 
@@ -8,9 +10,18 @@ app.get('/', (req, res) => {
   res.send('Okey');
 });
 
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, config.imagesFolder);
+  },
+  filename: function (req, file, cb) {
+    cb(null, generateId() + path.extname(file.originalname)); //Appending extension
+  },
+});
+
 app.post(
   '/upload',
-  multer({ dest: config.imagesFolder }).single('image'),
+  multer({ storage: storage }).single('image'),
   (req, res) => {
     res.send(req.file.filename);
   }
