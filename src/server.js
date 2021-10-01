@@ -30,7 +30,7 @@ app.post(
     const id = parsedName.name;
     const extension = parsedName.ext;
 
-    db.insert(new Img(null, null, req.file.size, extension));
+    db.insert(new Img(id, null, req.file.size, extension));
 
     res.send(id);
   }
@@ -41,11 +41,19 @@ app.get('/list', (req, res) => {
 });
 
 app.get('/image/:id', (req, res) => {
-  res.send(req.params.id);
+  const img = db.getOne(req.params.id);
+
+  const pathToImg = path.resolve(config.imagesFolder, img.id + img.extension);
+
+  res.download(pathToImg);
 });
 
-app.delete('/image/:id', (req, res) => {
-  res.send(req.params.id);
+app.delete('/image/:id', async (req, res) => {
+  const imgId = req.params.id;
+
+  const id = await db.remove(imgId);
+
+  return res.json({ id });
 });
 
 app.listen(config.PORT, () => {
