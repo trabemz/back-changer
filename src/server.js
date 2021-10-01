@@ -1,5 +1,6 @@
 const express = require('express');
 const multer = require('multer');
+const config = require('./config');
 
 const app = express();
 
@@ -9,7 +10,7 @@ app.get('/', (req, res) => {
 
 app.post(
   '/upload',
-  multer({ dest: './db/images' }).single('image'),
+  multer({ dest: config.imagesFolder }).single('image'),
   (req, res) => {
     res.send(req.file.filename);
   }
@@ -27,8 +28,6 @@ app.delete('/image/:id', (req, res) => {
   res.send(req.params.id);
 });
 
-const PORT = 8080;
-
-app.listen(PORT, () => {
-  console.log(`Server started: ${PORT}`);
+app.listen(config.PORT, () => {
+  console.log(`Server started: ${config.PORT}`);
 });
