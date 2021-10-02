@@ -25,6 +25,10 @@ module.exports = async (req, res, next) => {
       threshold
     );
 
+    res.set({
+      'Content-Disposition': `attachment; filename="merge.${front.extension}"`,
+    });
+
     result.pipe(res);
   } catch (err) {
     next(err);
