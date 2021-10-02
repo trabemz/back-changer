@@ -3,6 +3,7 @@ const { EventEmitter } = require('stream');
 const { dumpFile } = require('../config');
 const { writeFile } = require('fs/promises');
 const Img = require('./Img');
+const { NotFoundApiError } = require('../validators/errors/ApiError');
 
 class Database extends EventEmitter {
   constructor() {
@@ -38,15 +39,18 @@ class Database extends EventEmitter {
   getOne(id) {
     const img = this.images[id];
 
-    if (!img) return null;
+    if (!img) {
+      throw new NotFoundApiError('Image not found');
+    }
 
     return img;
   }
 
   async remove(id) {
-    const img = this.images[id];
+    const img = this.getOne(id);
 
     await img.delete();
+
     delete this.images[id];
 
     this.emit('changed');
