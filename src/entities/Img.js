@@ -4,11 +4,12 @@ const { generateId } = require('../utils/generateId');
 const path = require('path');
 
 module.exports = class Img {
-  constructor(id, uploadedAt, size, extension) {
+  constructor(id, uploadedAt, size, extension, mimetype) {
     this.id = id || generateId();
     this.uploadedAt = uploadedAt || Date.now();
     this.size = size;
     this.extension = extension;
+    this.mimetype = mimetype;
   }
 
   async delete() {
@@ -33,6 +34,7 @@ module.exports = class Img {
       uploadedAt: this.uploadedAt,
       size: this.size,
       extension: this.extension,
+      mimetype: this.mimetype,
     };
   }
 };

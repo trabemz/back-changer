@@ -16,7 +16,7 @@ module.exports = (req, res, next) => {
     if (existsSync(img.path()) === false) {
       throw new NotFoundApiError('Image content not found.');
     }
-
+    res.setHeader('Content-Type', img.mimetype);
     res.download(img.path());
   } catch (err) {
     next(err);

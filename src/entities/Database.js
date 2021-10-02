@@ -22,7 +22,13 @@ class Database extends EventEmitter {
 
       for (let id in dump.images) {
         const img = dump.images[id];
-        this.images[id] = new Img(id, img.uploadedAt, img.size, img.extension);
+        this.images[id] = new Img(
+          id,
+          img.uploadedAt,
+          img.size,
+          img.extension,
+          img.mimetype
+        );
       }
     }
   }

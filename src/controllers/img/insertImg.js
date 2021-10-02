@@ -14,7 +14,9 @@ module.exports = (req, res, next) => {
     const id = parsedName.name;
     const extension = parsedName.ext;
 
-    db.insert(new Img(id, Date.now(), req.file.size, extension));
+    db.insert(
+      new Img(id, Date.now(), req.file.size, extension, req.file.mimetype)
+    );
 
     res.json({ id });
   } catch (err) {

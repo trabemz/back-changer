@@ -28,6 +28,7 @@ module.exports = async (req, res, next) => {
     res.set({
       'Content-Disposition': `attachment; filename="merge.${front.extension}"`,
     });
+    res.setHeader('Content-Type', front.mimetype);
 
     result.pipe(res);
   } catch (err) {
